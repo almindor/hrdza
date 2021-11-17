@@ -1,85 +1,84 @@
-rouille::rouille! {
-    externe cagette rouille;
+hrdza::hrdza! {
+    vonkajšia krabica hrdza;
 
-    utilisons std::collections::Dictionnaire comme Dico;
+    použi štd::kolekcia::Slovník ako Slovník;
 
-    convention CléValeur {
-        fonction écrire(&soi, clé: Chaine, valeur: Chaine);
-        fonction lire(&soi, clé: Chaine) -> Résultat<PeutÊtre<&Chaine>, Chaine>;
+    vlastnosť KlúčHodnota {
+        funkcia zapíš(&ja, kľúč: Reťazec, hodnota: Reťazec);
+        funkcia čítaj(&ja, kľúč: Reťazec) -> Výsledok<Možno<&Reťazec>, Reťazec>;
     }
 
-    statique mutable DICTIONNAIRE: PeutÊtre<Dico<Chaine, Chaine>> = Rien;
+    nehybný menný SLOVNÍK: Možno<Slovník<Reťazec, Reťazec>> = Nič;
 
-    structure Concrète;
+    // Sľúb mi, že toto nikdy nepoužiješ mimo hlavné vlákno!
+    štruktúra GlobálnySlovník;
 
-    réalisation CléValeur pour Concrète {
-        fonction écrire(&soi, clé: Chaine, valeur: Chaine) {
-            soit dico = dangereux {
-                DICTIONNAIRE.prendre_ou_insérer_avec(Défaut::défaut)
+    realizuj KlúčHodnota pre GlobálnySlovník {
+        funkcia zapíš(&ja, kľúč: Reťazec, hodnota: Reťazec) {
+            nech slovník = nebezpečné {
+                SLOVNÍK.daj_alebo_vlož_s(Štandardný::štandardný)
             };
-            dico.insérer(clé, valeur);
+
+            slovník.vlož(kľúč, hodnota);
         }
-        fonction lire(&soi, clé: Chaine) -> Résultat<PeutÊtre<&Chaine>, Chaine> {
-            si soit Quelque(dico) = dangereux { DICTIONNAIRE.en_réf() } {
-                Bien(dico.lire(&clé))
-            } sinon {
-                Arf("fetchez le dico".vers())
+
+        funkcia čítaj(&ja, kľúč: Reťazec) -> Výsledok<Možno<&Reťazec>, Reťazec> {
+            ak je Nejaký(slovník) = nebezpečný { SLOVNÍK.ako_odkaz() } {
+                Fajn(slovník.daj(&kľúč))
+            } inak {
+                Zle("Overenie slovníku".zameň())
             }
         }
     }
 
-    public(cagette) fonction peut_etre(i: u32) -> PeutÊtre<Résultat<u32, Chaine>> {
-        si i % 2 == 1 {
-            si i == 42 {
-                Quelque(Arf(Chaine::depuis("merde")))
-            } sinon {
-                Quelque(Bien(33))
+    verejná(v_krabici) funkcia možno(i: u32) -> Možno<Výsledok<u32, Reťazec>> {
+        ak i % 2 == 1 {
+            ak i == 42 {
+                Nejaký(Uff(Reťazec::z("Juj!")))
+            } inak {
+                Nejaký(Fajn(33))
             }
-        } sinon {
-            Rien
+        } inak {
+            Nič
         }
     }
 
-    asynchrone fonction exemple() {
+    asynchrónna funkcia ukážka() { }
+
+    asynchrónna funkcia ukážka2() {
+        ukážka().počkaj;
     }
 
-    asynchrone fonction exemple2() {
-        exemple().attend;
-    }
+    funkcia hlavná() {
+        nech menné x = 31;
 
-    fonction principale() {
-        soit mutable x = 31;
-
-        selon x {
+        zodpovedá x {
             42 => {
-                affiche!("omelette du fromage")
+                vypíš_riadok!("Význam vesmíru je {}!", x)
             }
-            _ => affiche!("voila")
+            _ => vypíš_riadok!("Tak nič.")
         }
 
-        pour i de 0..10 {
-            soit val = boucle {
-                arrête i;
+        pre i v 0..10 {
+            nech hodnota = cykli {
+                preruš i;
             };
 
-            tant que x < val {
+            pokiaľ x < hodnota {
                 x += 1;
             }
 
-            x = si soit Quelque(resultat) = peut_etre(i) {
-                resultat.déballer()
-            } sinon {
+            x = ak je Nejaký(výsledok) = možno(i) {
+                výsledok.rozbal()
+            } inak {
                 12
             };
         }
-
-        //secondaire();
     }
 
-    #[légal(code_inaccessible)]
-    fonction secondaire() {
-        merde!("oh non"); // for the true French experience
-        calisse!("tabernacle"); // for friends speaking fr-ca
-        oups!("fetchez la vache"); // in SFW contexts
+    #[povol(neprístupny_kód)]
+    funkcia keď_sa_nepodarí() {
+        panika!("Panika!");
+        prúser!("Niečo sa pokazilo");
     }
 }
