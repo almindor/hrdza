@@ -1,6 +1,6 @@
 # hrdza
 
-![](https://github.com/almindor/hrdza/raw/master/logo.jpeg)
+![](https://github.com/almindor/hrdza/blob/hlavna/logo.jpeg)
 
 Aren't you _unavený_ from writing Rust programs in English? Do you like saying
 "kurva" a lot? Would you like to try something different, in an exotic and
